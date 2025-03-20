@@ -1,0 +1,5 @@
+mqtt 
+
+mosquitto_sub -h i-surveil-be.virtualpolicestation.com -t 'inc/disaster' -p 1883
+
+mosquitto_sub -h i-surveil-be.virtualpolicestation.com -t 'inc/security' -p 1883

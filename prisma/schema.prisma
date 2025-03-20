@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+enum ForwardedTo {
+  OCS
+  DCI
+}
+
+
+
+model Modules {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  bf          Boolean      @default(false)  
+  repetition  Boolean      @default(false)
+  fields      Json?
+  createdAt   DateTime     @default(now())
+  ModuleData  ModuleData[]
+  sub_modules sub_module[]
+}
+
+model sub_module {
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String?
+  bf              Boolean           @default(false)
+  repetition      Boolean           @default(false)
+  fields          Json?
+  module          Modules           @relation(fields: [modulesId], references: [id])
+  createdAt       DateTime          @default(now())
+  modulesId       Int
+  sub_module_data sub_module_data[]
+}
+
+model ModuleData {
+  id             Int      @id @default(autoincrement())
+  moduleId       Int
+  submissionDate DateTime @default(now())
+  attachments    String[] // Store multiple file paths
+  formData       Json
+  Modules        Modules  @relation(fields: [moduleId], references: [id])
+  userId         Int
+}
+
+model sub_module_data {
+  id             Int          @id @default(autoincrement())
+  sub_moduleId   Int
+  submissionDate DateTime     @default(now())
+  attachments    String[] // Store multiple file paths
+  formData       Json
+  userId         Int?
+  sub_module     sub_module   @relation(fields: [sub_moduleId], references: [id])
+  ob_number      String?
+  ip_rs_person   IPRS_Person @relation(fields: [iprsId], references: [id])
+  iprsId         Int  
+  resolved Boolean? 
+  assigned_officer_id Int? 
+  forwarded_to   ForwardedTo?  // Optional field
+}
+
+model IPRS_Person {
+  id                Int               @id @default(autoincrement())
+  id_no             String?           @unique
+  passport_no       String?
+  first_name        String
+  middle_name       String?
+  last_name         String
+  gender            String
+  nationality       String
+  county_of_birth   String?
+  district_of_birth String?
+  division_of_birth String?
+  location_of_birth String?
+  date_of_birth     DateTime
+  mug_shot          String?
+  sub_module_data   sub_module_data[]
+  email             String?
+  phone_number      String?
+  county String?
+  sub_county String?
+}

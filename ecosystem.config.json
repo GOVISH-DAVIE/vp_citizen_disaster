@@ -1,0 +1,18 @@
+{
+  "apps": [
+    {
+      "name": "county-backend",
+      "script": "/var/www/armory-backend/county/county-backend/src/app.ts",
+      "watch": true,
+      "ignore_watch": ["node_modules"],
+      "exec_mode": "fork",
+      "instances": 1,
+      "autorestart": true,
+      "max_restarts": 10,
+      "log_date_format": "YYYY-MM-DD HH:mm:ss.SSS",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}
